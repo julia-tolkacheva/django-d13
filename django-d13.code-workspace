@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "Django-d6",
+			"path": "../Django-d6"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../python"
+		}
+	],
+	"settings": {}
+}
