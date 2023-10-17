@@ -7,7 +7,7 @@ class Category(models.Model):
     name = models.CharField(max_length = 255, unique = True)
    
     def __str__(self):
-        return f'{self.categoryName}'
+        return f'{self.name}'
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete = models.CASCADE)
@@ -19,7 +19,7 @@ class Post(models.Model):
     postRate = models.IntegerField(default = 0)
 
     def __str__(self):
-        return f'{self.postTitle}-({self.pk})' 
+        return f'{self.title}-({self.pk})' 
 
     def like(self):
         self.postRate += 1
@@ -30,10 +30,10 @@ class Post(models.Model):
         self.save()
     
     def preview(self, count=124):
-        if (len(self.postBody) <= count):
-            return self.postBody
+        if (len(self.body) <= count):
+            return self.body
         else:
-            return self.postBody[:count-3]+'...'
+            return self.body[:count-3]+'...'
 
     def get_absolute_url(self):
         return f'/post/{self.id}'
@@ -60,10 +60,10 @@ class Comment(models.Model):
         self.save()
 
     def preview(self, count=124):
-        if (len(self.commentBody) <= count):
-            return self.commentBody
+        if (len(self.body) <= count):
+            return self.body
         else:
-            return self.commentBody[:count-3]+'...'
+            return self.body[:count-3]+'...'
 
     def __str__(self):
         return self.preview(40)
@@ -78,6 +78,10 @@ class Media(models.Model):
         (video,   'Видео'),
         (file,    'Файл')
     ]
+    title = models.CharField(max_length = 255, default = 'Заголовок')
     toPost = models.ForeignKey(Post, on_delete = models.CASCADE)
     type = models.CharField(max_length = 1, choices = tChoice, default = picture)
     media = models.FileField(upload_to= 'user_files')
+
+    def __str__(self):
+        return self.title

@@ -1,72 +1,55 @@
 {% extends 'layout/default.html' %}
 
 {% block title %}
-Список новостей
+Доска объявлений для MMORPG Dungeons@Rats
 {% endblock title %} 
 
 {% block content %} 
 <section class="tables">
     <div class="page-header">
-        <div class=row><h1 class="page-title">Все новости</h1></div>   
-        <div class=row><h3 class="page-title small text-muted">{{ time_now|date:'M d Y' }}</h3></div> 
+        <div class=row><h1 class="page-title">Последние объявления</h1></div>   
     </div>
-    <div class="table-responsive">
-        {% if news %}
-            <table class="table b-table table-striped table-hover">
-                <thead >
-                    <th scope="col">
-                        Категория
-                    </th>  
-                    <th scope="col">
-                        Заголовок
-                    </th>
-                    <th scope="col">
-                        Дата
-                    </th>            
-                    <th scope="col">
-                        Текст(50 символов)
-                    </th>
-                    <th scope="col">
-                        Рейтинг
-                    </th>
-                    <th scope="col">
-                        Действия
-                    </th>
-                </thead>
-                <tbody>
-                {% for post in news %}
-                    <tr>
-                        <td>
-                            {% for cat in post.postCat.all %}
-                            <li><a href="subscribe/{{ cat.id }}">{{ cat }}</a></li>
-                            {% endfor %}  
-                        </td>
-                        <td>
-                            <a href="{{ post.id }}">{{ post.postTitle|truncatewords:5 }}</a>
-                        </td>
-                        <td>
-                            {{ post.postDateTime|date:'M d Y' }}
-                        </td>
-                        <td>
-                            {{ post.postBody|truncatechars:50 }}
-                        </td>
-                        <td>
-                            {{ post.postRate }}
-                        </td>
-                        <td>
-                            <a href="update/{{ post.id }}"> Изменить </a> / 
-                            <a href="delete/{{ post.id }}"> Удалить </a>
-                        </td>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col col-lg-2"></div>
+            <div class="col-md-auto">
+            {% if messages %}
+                {% for message in messages %}
 
-                    </tr>
+                <div class="card text-center mb-3">
+                    <img src="{{ message.mainPic.url }}" class="card-img-top" alt="{{ message.title }}">
+                    <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="true" href="#">Active</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                    </div>
+                    <div class="card-body">
+                    <h5 class="card-title">{{ message.title}}</h5>
+                    <p class="card-text">{{ message.body }}</p>
+                    <a href="#" class="btn btn-primary">Оставить отзыв</a>
+                    </div>
+                </div>
+
                 {% endfor %}        
-            </table>
 
-            {% include 'layout/parts/paginator.html' %}
+                {% include 'layout/parts/paginator.html' %}
 
-        {% else %}
-            <h2> Новостей нет </h2>
-        {% endif %}
+                {% else %}
+                    <h2> Новостей нет </h2>
+                {% endif %}
+            </div>
+            <div class="col col-lg-2">
+            3 of 3
+            </div>
+        </div>
     </div>
 </section>
 {% endblock content %}  
