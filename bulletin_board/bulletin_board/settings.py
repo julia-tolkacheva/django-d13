@@ -132,7 +132,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-ACCOUNT_FORMS = {'signup':'news.forms.BasicSignupForm'}
+ACCOUNT_FORMS = {'signup':'bb.forms.BasicSignupForm'}
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 

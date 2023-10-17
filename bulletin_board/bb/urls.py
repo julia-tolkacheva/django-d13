@@ -3,6 +3,7 @@ from .views import MessageList
 
 urlpatterns = [
     path('', MessageList.as_view(), name='messages'),
+    path('messages/', MessageList.as_view(), name='messages1'),
     # path('<int:pk>', NewsDetail.as_view(), name='news_detail'),
     # path('search', NewsSearch.as_view(), name='post_search'),
     # path('create', PostCreateView.as_view(), name='post_create'),
