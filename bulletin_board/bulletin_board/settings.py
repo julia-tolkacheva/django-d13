@@ -68,8 +68,8 @@ SERVER_EMAIL = EMAIL_HOST_USER + '@yandex.ru'
 
 
 #media
-MEDIA_ROOT = '/media'
-MEDIA_URL = ''
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/media/'
 
 #apscheduler:
 
