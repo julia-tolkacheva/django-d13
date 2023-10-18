@@ -56,7 +56,7 @@ class Comment(models.Model):
         self.save()
     
     def disapprove(self):
-        self.status = 0
+        self.statPost.postChoiceus = 0
         self.save()
 
     def preview(self, count=124):
@@ -79,6 +79,7 @@ class Media(models.Model):
         (file,    'Файл')
     ]
     title = models.CharField(max_length = 255, default = 'Заголовок')
+    descr = models.TextField(default='Описание файла')
     toPost = models.ForeignKey(Post, on_delete = models.CASCADE)
     type = models.CharField(max_length = 1, choices = tChoice, default = picture)
     media = models.FileField(upload_to= 'user_files')

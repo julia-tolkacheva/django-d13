@@ -2,15 +2,18 @@ from typing import Any, Dict
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.views.generic.edit import FormView
 from .models import Post, Category, Comment, Media
+from .forms import MessageCreateForm
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-
+from django.db.models import Avg, Count, Min, Sum
+# LoginRequiedMixin - для авторизованного доступа к странице
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 # main page view
 class MessageList(ListView):
     model = Post
-    #queryset = Post.objects.order_by("-postDateTime")
     ordering = ['-cTime']
     template_name = 'messages/main.html'
     context_object_name = 'messages'
@@ -18,13 +21,8 @@ class MessageList(ListView):
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
-        # context['time_now'] = timezone.localtime(timezone.now())
-        # context['empty'] = None
-        # context['filter'] = NewsFilter(self.request.GET,
-        #                                queryset=self.get_queryset())
-        # context['choices'] = Post.postChoice
-        # context['form'] = NewsForm()
-        # context['is_author'] = self.request.user.groups.filter(name='Authors').exists()
+        context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        context['messages'] = Post.objects.annotate(num_comments=Count('comment'))
         return context
 
     def post(self, request, *args, **kwargs):
@@ -32,3 +30,71 @@ class MessageList(ListView):
         if form.is_valid():
             form.save()
         return super().get(request, *args, **kwargs)
+
+
+class MessageDetail(DetailView):
+    model = Post
+    template_name = 'messages/detail.html'
+    context_object_name = 'message'
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context =  super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        context['media'] = Media.objects.filter(toPost=self.get_object())
+        comments = Comment.objects.filter(toPost=self.get_object())
+        context['comments_count'] = comments.count()
+        context['comments'] = comments
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+        return super().get(request, *args, **kwargs)
+
+
+
+#класс представления для создания поста
+class MessageCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = ('bb.add_post',)
+    template_name = 'messages/create.html'
+    form_class = MessageCreateForm
+    context_object_name = 'post'
+    success_url = ''
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context =  super().get_context_data(**kwargs)
+        author = self.request.user.id
+        context['categories'] = Category.objects.annotate(num_posts=Count('post')) 
+        context['time_now'] = timezone.localtime(timezone.now())
+        return context  
+
+    # def post(self, request, *args, **kwargs):
+    #     form = self.form_class(request.POST)
+    #     form.author = self.request.user  
+    #     print ("post? ")      
+    #     if form.is_valid():
+    #         print ("post! ->")
+    #         form.save()
+    #     return super().get(request, *args, **kwargs) 
+
+
+
+
+#класс представления для изменения поста
+class PostUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_post',)
+    template_name = 'newspaper/create_post.html'
+    form_class = MessageCreateForm
+
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+
+#класс представления для удаления поста
+class PostDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
+    template_name = 'newspaper/delete_post.html'
+    queryset = Post.objects.all()
+    success_url = '/news/'#reverse_lazy('newspaper:news')

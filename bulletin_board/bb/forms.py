@@ -22,31 +22,27 @@ class SubscribeForm(forms.Form):
         pass
 
 
-# class NewsForm (ModelForm):
+class MessageCreateForm (ModelForm):
     
-#     class Meta:
-#         model = Post
-#         fields = ['postAuthor', 'postType', 'postCat', 'postTitle', 'postBody']
-#         widgets = {
-#           'postAuthor' : forms.Select(attrs={
-#             'class': 'form-control', 
-#           }),
-          
-#           'postType' : forms.Select(attrs={
-#             'class': 'form-control', 
-#           }),
+    class Meta:
+        model = Post
+        fields = ['author', 'category', 'title', 'body', 'mainPic']
+        widgets = {
+          'author' : forms.Select(attrs={
+            'class': 'form-control', 
+          }),
 
-#           'postCat' : forms.SelectMultiple(attrs={
-#             'class': 'form-control', 
-#           }),
+          'category' : forms.SelectMultiple(attrs={
+            'class': 'form-control', 
+          }),
 
-#           'postBody' : forms.Textarea(attrs={
-#             'class': 'form-control', 
-#             'placeholder': 'Здесь введите текст сообщения'
-#           }),
+          'body' : forms.Textarea(attrs={
+            'class': 'form-control', 
+            'placeholder': 'Здесь введите текст сообщения'
+          }),
 
-#           'postTitle' : forms.TextInput(attrs={
-#             'class': 'form-control', 
-#             'placeholder': 'Введите заголовок'
-#           }),
-#         }
+          'title' : forms.TextInput(attrs={
+            'class': 'form-control', 
+            'placeholder': 'Введите заголовок'
+          }),
+        }

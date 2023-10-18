@@ -1,55 +1,57 @@
 {% extends 'layout/bb.html' %}
 
 {% block title %}
-Доска объявлений для MMORPG Dungeons@Rats
+Доска Дракона
 {% endblock title %} 
 
+{% block name %}
+Доска Дракона
+{% endblock name %} 
+
 {% block content %} 
-<section class="tables">
-    <div class="page-header">
-        <div class=row><h1 class="page-title">Последние объявления</h1></div>   
-    </div>
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col col-lg-2"></div>
-            <div class="col-md-auto">
-            {% if messages %}
-                {% for message in messages %}
+    {% for message in messages %}
 
-                <div class="card text-center mb-3">
-                    <img src="{{ message.mainPic.url }}" class="card-img-top" alt="{{ message.title }}">
-                    <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs">
-                        <li class="nav-item">
-                        <a class="nav-link active" aria-current="true" href="#">Active</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                        </li>
-                    </ul>
-                    </div>
-                    <div class="card-body">
-                    <h5 class="card-title">{{ message.title}}</h5>
-                    <p class="card-text">{{ message.body }}</p>
-                    <a href="#" class="btn btn-primary">Оставить отзыв</a>
-                    </div>
-                </div>
-
-                {% endfor %}        
-
-                {% include 'layout/parts/paginator.html' %}
-
-                {% else %}
-                    <h2> Новостей нет </h2>
-                {% endif %}
+          <article class="entry entry-single">
+            <div class="entry-img">
+              <img src="../{{ message.mainPic.url }}" alt="" class="img-fluid">
             </div>
-            <div class="col col-lg-2">
-            3 of 3
+
+            <h2 class="entry-title">
+              <a href="{{ message.pk }}">{{ message.title }}</a>
+            </h2>
+
+            <div class="entry-meta">
+              <ul>
+                <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">{{message.author.username}}</a></li>
+                <li class="d-flex align-items-center"><i class="bi bi-clock"></i> 
+                    <a href="blog-single.html"><time datetime="2020-01-01">{{ message.cTime|date:'d M Y' }}</time></a></li>
+                <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">{{ message.num_comments }}</a></li>
+              </ul>
             </div>
-        </div>
-    </div>
-</section>
+
+            <div class="entry-content">
+              <p>
+                {{ message.body }}
+              </p>
+            </div>
+
+            <div class="entry-footer">
+              <i class="bi bi-folder"></i>
+              <ul class="cats">
+                <li><a href="#">{{ message.category }}</a></li>
+              </ul>
+
+              <i class="bi bi-tags"></i>
+              <ul class="tags">
+                <li><a href="#">Creative</a></li>
+                <li><a href="#">Tips</a></li>
+                <li><a href="#">Marketing</a></li>
+              </ul>
+            </div>
+
+          </article><!-- End blog entry -->
+
+    {% empty %}
+    {% endfor %}
+
 {% endblock content %}  
