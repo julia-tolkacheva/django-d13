@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from .models import Post
 from django import forms
 from allauth.account.forms import SignupForm
+from django.forms.widgets import HiddenInput
 from django.contrib.auth.models  import Group
 from django.contrib.auth.models import User
 
@@ -26,12 +27,8 @@ class MessageCreateForm (ModelForm):
     
     class Meta:
         model = Post
-        fields = ['author', 'category', 'title', 'body', 'mainPic']
+        exclude = ('author', 'cTime', 'PostRate',)
         widgets = {
-          'author' : forms.Select(attrs={
-            'class': 'form-control', 
-          }),
-
           'category' : forms.SelectMultiple(attrs={
             'class': 'form-control', 
           }),

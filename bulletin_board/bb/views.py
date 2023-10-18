@@ -1,7 +1,8 @@
 from typing import Any, Dict
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.views.generic.edit import FormView
-from .models import Post, Category, Comment, Media
+from django.http import HttpResponseRedirect
+from .models import Post, Category, Comment, Media, PostCategory
 from .forms import MessageCreateForm
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -40,6 +41,7 @@ class MessageDetail(DetailView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        context['post_cat'] = PostCategory.objects.filter(post=self.get_object())
         context['media'] = Media.objects.filter(toPost=self.get_object())
         comments = Comment.objects.filter(toPost=self.get_object())
         context['comments_count'] = comments.count()
@@ -60,7 +62,7 @@ class MessageCreateView(PermissionRequiredMixin, CreateView):
     permission_required = ('bb.add_post',)
     template_name = 'messages/create.html'
     form_class = MessageCreateForm
-    context_object_name = 'post'
+    context_object_name = 'message'
     success_url = ''
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -70,14 +72,12 @@ class MessageCreateView(PermissionRequiredMixin, CreateView):
         context['time_now'] = timezone.localtime(timezone.now())
         return context  
 
-    # def post(self, request, *args, **kwargs):
-    #     form = self.form_class(request.POST)
-    #     form.author = self.request.user  
-    #     print ("post? ")      
-    #     if form.is_valid():
-    #         print ("post! ->")
-    #         form.save()
-    #     return super().get(request, *args, **kwargs) 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+    
 
 
 

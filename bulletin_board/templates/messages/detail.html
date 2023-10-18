@@ -21,9 +21,12 @@
 
             <div class="entry-meta">
               <ul>
-                <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">{{message.author.username}}</a></li>
-                <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-single.html"><time datetime="2020-01-01">Jan 1, 2020</time></a></li>
-                <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">12 Comments</a></li>
+                <li class="d-flex align-items-center"><i class="bi bi-person"></i> 
+                  <a href="blog-single.html">{{message.author.username}}</a></li>
+                <li class="d-flex align-items-center"><i class="bi bi-clock"></i> 
+                  <a href="blog-single.html"><time datetime="2020-01-01">{{message.cTime|date:'d M Y'}}</time></a></li>
+                <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> 
+                  <a href="blog-single.html">{{comments_count}} Comments</a></li>
               </ul>
             </div>
 
@@ -36,7 +39,9 @@
             <div class="entry-footer">
               <i class="bi bi-folder"></i>
               <ul class="cats">
-                <li><a href="#">{{ message.category }}</a></li>
+              {% for cat in post_cat %}
+                <li><a href="#">{{ cat.category.name }}</a></li>
+              {% endfor %}
               </ul>
 
               <i class="bi bi-tags"></i>
@@ -52,44 +57,34 @@
           <div class="blog-comments">
 
             <h4 class="comments-count">{{ comments_count }} Comments</h4>
-
+            
+            {% for comment in comments %}
             <div id="comment-1" class="comment">
               <div class="d-flex">
                 <div class="comment-img"><img src="{% static 'assets/img/blog/comments-1.jpg' %}" alt=""></div>
                 <div>
-                  <h5><a href="">Georgia Reader</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
-                  <time datetime="2020-01-01">01 Jan, 2020</time>
+                  <h5><a href="">{{comment.fromUser.username}}</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                  <time datetime="{{ message.cTime|date:'Y-m-d' }}">
+                    {{ comment.cTime|date:'d M Y H:i' }}</time>
                   <p>
-                    Et rerum totam nisi. Molestiae vel quam dolorum vel voluptatem et et. Est ad aut sapiente quis molestiae est qui cum soluta.
-                    Vero aut rerum vel. Rerum quos laboriosam placeat ex qui. Sint qui facilis et.
+                    {{comment.body}}
                   </p>
                 </div>
               </div>
-            </div><!-- End comment #1 -->
+            </div><!-- End comment # -->
+            {% empty %}
+            {% endfor %}
 
             <div class="reply-form">
-                <h4>Leave a Reply</h4>
-                <p>Your email address will not be published. Required fields are marked * </p>
+                <h4>Оставьте комментарий</h4>
+                <p>Автор может принять ваш комментарий, тогда на почту, указанную при регистрации придет оповещение * </p>
                 <form action="">
                   <div class="row">
-                    <div class="col-md-6 form-group">
-                      <input name="name" type="text" class="form-control" placeholder="Your Name*">
-                    </div>
-                    <div class="col-md-6 form-group">
-                      <input name="email" type="text" class="form-control" placeholder="Your Email*">
-                    </div>
-                  </div>
-                  <div class="row">
                     <div class="col form-group">
-                      <input name="website" type="text" class="form-control" placeholder="Your Website">
+                      <textarea name="comment" class="form-control" placeholder="Оставьте ваш отзыв здесь*"></textarea>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col form-group">
-                      <textarea name="comment" class="form-control" placeholder="Your Comment*"></textarea>
-                    </div>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Post Comment</button>
+                  <button type="submit" class="btn btn-primary">Отправить</button>
 
                 </form>
 
