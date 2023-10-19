@@ -1,9 +1,9 @@
 from typing import Any, Dict
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, ModelFormMixin
 from django.http import HttpResponseRedirect
 from .models import Post, Category, Comment, Media, PostCategory
-from .forms import MessageCreateForm
+from .forms import MessageCreateForm, AddCommentForm
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -33,10 +33,12 @@ class MessageList(ListView):
         return super().get(request, *args, **kwargs)
 
 
-class MessageDetail(DetailView):
+class MessageDetail(ModelFormMixin, DetailView):
+
     model = Post
     template_name = 'messages/detail.html'
     context_object_name = 'message'
+    form_class = AddCommentForm
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
@@ -46,16 +48,16 @@ class MessageDetail(DetailView):
         comments = Comment.objects.filter(toPost=self.get_object())
         context['comments_count'] = comments.count()
         context['comments'] = comments
-
         return context
 
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-        return super().get(request, *args, **kwargs)
 
-
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        print('la-la')
+        self.object.fromUser = self.request.user.id
+        self.object.toPost = self.get_object()
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 #класс представления для создания поста
 class MessageCreateView(PermissionRequiredMixin, CreateView):

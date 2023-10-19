@@ -23,12 +23,12 @@
             <div class="entry-meta">
               <ul>
                 <li class="d-flex align-items-center"><i class="bi bi-person"></i> 
-                    <a href="blog-single.html">{{message.author.username}}</a></li>
+                    <a href="#author">{{message.author.username}}</a></li>
                 <li class="d-flex align-items-center"><i class="bi bi-clock"></i> 
                     <a href="blog-single.html"><time datetime="{{ message.cTime|date:'Y-m-d' }}">
                         {{ message.cTime|date:'Y-m-d H:i' }}</time></a></li>
                 <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> 
-                    <a href="blog-single.html">{{ message.num_comments }} Comments</a></li>
+                    <a href="{{ message.pk }}#comments">{{ message.num_comments }} Comments</a></li>
               </ul>
             </div>
 
@@ -41,14 +41,16 @@
             <div class="entry-footer">
               <i class="bi bi-folder"></i>
               <ul class="cats">
-                <li><a href="#">{{ message.category }}</a></li>
+              {% for cat in message.category.all %}
+                <li><a href="#">{{ cat }}</a></li>
+              {% endfor %}
               </ul>
 
               <i class="bi bi-tags"></i>
               <ul class="tags">
-                <li><a href="#">Creative</a></li>
-                <li><a href="#">Tips</a></li>
-                <li><a href="#">Marketing</a></li>
+              <!-- <li><a href="#">Tag1</a></li>
+                <li><a href="#">Tag2</a></li>
+                <li><a href="#">Tag3</a></li> -->
               </ul>
             </div>
 

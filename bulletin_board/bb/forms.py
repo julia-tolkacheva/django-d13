@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Post
+from .models import Post, Comment
 from django import forms
 from allauth.account.forms import SignupForm
 from django.forms.widgets import HiddenInput
@@ -23,8 +23,23 @@ class SubscribeForm(forms.Form):
         pass
 
 
-class MessageCreateForm (ModelForm):
+class AddCommentForm(ModelForm):
+    """Форма добавления комментария"""
+    class Meta:
+        model = Comment
+        fields = ('cbody',) 
     
+        widgets={"cbody": forms.Textarea(attrs={
+          'class': 'form-control',
+          'cols': 80,
+          'rows': 5,
+          'placeholder': 'Здесь введите текст сообщения',
+          }),
+        }
+        labels={'cbody': ''}
+ 
+
+class MessageCreateForm (ModelForm):
     class Meta:
         model = Post
         exclude = ('author', 'cTime', 'PostRate',)

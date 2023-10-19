@@ -48,7 +48,7 @@ class Comment(models.Model):
     toPost = models.ForeignKey(Post, on_delete = models.CASCADE)
     fromUser = models.ForeignKey(User, on_delete = models.CASCADE)
     cTime = models.DateTimeField(auto_now_add = True)
-    body = models.TextField(default = 'Комментарий')
+    cbody = models.TextField(default = 'Комментарий')
     status = models.IntegerField(default = 0)
 
     def approve(self):
@@ -60,10 +60,10 @@ class Comment(models.Model):
         self.save()
 
     def preview(self, count=124):
-        if (len(self.body) <= count):
-            return self.body
+        if (len(self.cbody) <= count):
+            return self.cbody
         else:
-            return self.body[:count-3]+'...'
+            return self.cbody[:count-3]+'...'
 
     def __str__(self):
         return self.preview(40)
