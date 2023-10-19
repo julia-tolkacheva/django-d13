@@ -1,0 +1,29 @@
+{% extends 'layout/bb.html' %}
+{% load account socialaccount %}
+{% block title %}
+    Регистрация
+{% endblock title %}
+{% block content %}
+    <h1>
+        Регистрация
+    </h1>
+    <p>
+        У вас уже есть аккаунт? Тогда пожалуйста <a href="{{ login_url }}">войдите</a>.
+    </p>
+    {% url 'account_signup' as action_url %}
+    <form  method="post" action={{ action_url }} tags="entrance,signup">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if redirect_field_value %}
+            <input type="hidden"
+                    name="{{ redirect_field_name }}"
+                    value="{{ redirect_field_value }}" />
+        {% endif %}
+
+        <button tags="prominent,signup" type="submit" >
+                Зарегистрировать
+        </button>
+
+    </form>
+
+{% endblock content %}

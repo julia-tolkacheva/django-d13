@@ -9,6 +9,13 @@
 		},
 		{
 			"path": "../python"
+		},
+		{
+			"path": "../allauth"
+		},
+		{
+			"name": "django-allauth",
+			"path": "../allauth/django-allauth"
 		}
 	],
 	"settings": {}

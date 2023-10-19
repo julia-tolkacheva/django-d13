@@ -26,7 +26,7 @@
                 <li class="d-flex align-items-center"><i class="bi bi-clock"></i> 
                   <a href="blog-single.html"><time datetime="2020-01-01">{{message.cTime|date:'d M Y'}}</time></a></li>
                 <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> 
-                  <a href="blog-single.html">{{comments_count}} Comments</a></li>
+                  <a href="#comments">{{comments_count}} Comments</a></li>
               </ul>
             </div>
 
@@ -67,7 +67,7 @@
                   <time datetime="{{ message.cTime|date:'Y-m-d' }}">
                     {{ comment.cTime|date:'d M Y H:i' }}</time>
                   <p>
-                    {{comment.body}}
+                    {{comment.cbody}}
                   </p>
                 </div>
               </div>

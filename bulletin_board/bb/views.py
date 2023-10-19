@@ -40,6 +40,8 @@ class MessageDetail(ModelFormMixin, DetailView):
     context_object_name = 'message'
     form_class = AddCommentForm
 
+    success_url = f'/messages/'
+    
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['categories'] = Category.objects.annotate(num_posts=Count('post'))
@@ -49,15 +51,24 @@ class MessageDetail(ModelFormMixin, DetailView):
         context['comments_count'] = comments.count()
         context['comments'] = comments
         return context
-
+    
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        print('la-la')
-        self.object.fromUser = self.request.user.id
+        self.object.fromUser = self.request.user
         self.object.toPost = self.get_object()
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+   
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # <process form cleaned data>
+            return self.form_valid(form)
+
+        return render(request, self.template_name, {"form": form})
+
+ 
 
 #класс представления для создания поста
 class MessageCreateView(PermissionRequiredMixin, CreateView):
