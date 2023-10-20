@@ -61,7 +61,7 @@
             {% for comment in comments %}
             <div  class="comment">
               <div class="d-flex">
-                <div class="comment-img"><img src="{% static 'assets/img/blog/comments-1.jpg' %}" alt=""></div>
+                <div class="comment-img"><img src="{% static 'assets/images/unknown_user.jpg' %}" alt=""></div>
                 <div>
                   <h5><a href="">{{comment.fromUser.username}}</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
                   <time datetime="{{ message.cTime|date:'Y-m-d' }}">
@@ -75,21 +75,26 @@
             {% empty %}
             {% endfor %}
 
+            {% if user.is_authenticated %}
             <div class="reply-form">
-                <h4>{{user.username}}, оставьте комментарий</h4>
-                <p>Автор может принять ваш комментарий, тогда на почту, указанную при регистрации придет оповещение * </p>
-                <form action="/messages/{{message.pk}}" method="post">
-                  {% csrf_token %}
-                  <div class="row">
-                    <div class="col form-group">
-                      {{ form }}
-                    </div>
+              <h4>{{user.username}}, оставьте комментарий</h4>
+              <p>Автор может принять ваш комментарий, тогда на почту, указанную при регистрации придет оповещение * </p>
+              <form action="/messages/{{message.pk}}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col form-group">
+                    {{ form }}
                   </div>
-                  <button type="submit" class="btn btn-primary">Отправить</button>
-
-                </form>
-
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+              </form>
             </div>
+            {% else %}
+            <p>Написание комментариев доступно только 
+              <a href="/accounts/login/" class="scrollto">зарегистированным пользователям</a></p>
+            {% endif %}
+
+
 
           </div><!-- End blog comments -->
 {% endblock content %}  

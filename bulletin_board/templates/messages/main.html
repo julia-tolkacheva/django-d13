@@ -8,6 +8,17 @@
 Доска Дракона
 {% endblock name %} 
 
+{% block userbutton %}
+<ol>
+  {% if user.is_authenticated %}
+  <li><a href="create" class="scrollto">Создать пост</a></li>
+  <li><a href="my_comments" class="scrollto">Посмотреть комментарии</a></li>
+  {% else %}
+  Создание поста доступно только <a href="/accounts/login/" class="scrollto">зарегистированным пользователям</a>
+  {% endif %}
+</ol>
+{% endblock userbutton %}
+
 {% block content %} 
     {% for message in messages %}
 

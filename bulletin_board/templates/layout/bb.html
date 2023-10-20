@@ -87,19 +87,25 @@
     <!-- ======= Breadcrumbs ======= -->
     <section id="breadcrumbs" class="breadcrumbs">
       <div class="container">
-
-        <ol>
-          <li><a href="/main/">Главная</a></li>
-          <li><a href="/messages/">Доска</a></li>
-        </ol>
-        <h2>{% block name %}{% endblock name %}</h2>
+        <div class="row">
+          <div class="col-lg-8">
+            <ol>
+              <li><a href="/messages/">Главная</a></li>
+              <li><a href="/messages/">Доска</a></li>
+            </ol>
+            <h2>{% block name %}{% endblock name %}</h2>
+          </div>
+          <div class="col-lg-4">
+            {% block userbutton %}{% endblock userbutton %}
+          </div>
+        </div>
 
       </div>
     </section><!-- End Breadcrumbs -->
 
     <!-- ======= Blog Single Section ======= -->
     <section id="blog" class="blog">
-      <div class="container" data-aos="fade-up">
+      <div class="container" >
 
         <div class="row">
           <div class="col-lg-8 entries">
