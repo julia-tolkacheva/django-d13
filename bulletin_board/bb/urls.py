@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import MessageList, MessageDetail, MessageCreateView, MessageUpdateView, MessageDeleteView, CommentList, CommentReply
+from .views import MessageList, MessageDetail, MessageCreateView, \
+MessageUpdateView, MessageDeleteView, CommentList, CommentReply, CommentDeleteView
 
 urlpatterns = [
     path('', MessageList.as_view(), name='messages'),
@@ -9,6 +10,7 @@ urlpatterns = [
     path('create', MessageCreateView.as_view(), name='msg_create'),
     path('update/<int:pk>', MessageUpdateView.as_view(), name='msg_update'),
     path('delete/<int:pk>', MessageDeleteView.as_view(), name='msg_delete'),
+    path('comdelete/<int:pk>', CommentDeleteView.as_view(), name='com_delete'),
     path('reply/<int:pk>', CommentReply.as_view(), name='reply'),
     # path('upgrade', upgrade_acc, name='upgrade'),
 ]

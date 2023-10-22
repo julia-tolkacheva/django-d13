@@ -24,8 +24,11 @@
         <div class="d-flex">
             <div class="comment-img"><img src="{% static 'assets/images/unknown_user.jpg' %}" alt=""></div>
             <div>
-            <h5><a href="">{{comment.fromUser.username}}</a> <a href="reply/{{ comment.pk }}" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
-            <time datetime="{{ message.cTime|date:'Y-m-d' }}">
+            <h5><a href="">{{comment.fromUser.username}}</a> 
+                <a href="reply/{{ comment.pk }}" class="reply"><i class="bi bi-reply-fill"></i> Reply</a>
+                <a href="comdelete/{{ comment.pk }}" class="delete"><i class="bi bi-trash-fill"></i> Delete</a></h5>
+            
+                <time datetime="{{ message.cTime|date:'Y-m-d' }}">
                 {{ comment.cTime|date:'d M Y H:i' }}</time>
             <p>
                 {{comment.cbody}}
@@ -33,6 +36,25 @@
             </div>
         </div>
         </div><!-- End comment # -->
+
+        {% for reply in replies %}
+        {% if reply.toComment == comment %}
+        <div id="comment-reply" class="comment comment-reply">
+          <div class="d-flex">
+            <div class="comment-img"><img src="{% static 'assets/images/unknown_user.jpg' %}" alt=""></div>
+            <div>
+              <h5><a href="">{{ user.username}}</a> </h5>
+              <time datetime="{{ reply.cTime|date:'Y-m-d' }}">
+                {{ reply.cTime|date:'d M Y H:i' }}</time>
+              <p>
+                {{reply.rbody}}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      
     {% empty %}
     {% endfor %}
 </div>    

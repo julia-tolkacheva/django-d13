@@ -84,6 +84,7 @@ class CommentList(ListView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        context['replies'] = Reply.objects.filter(toComment__toPost__author=self.request.user)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -171,5 +172,22 @@ class MessageDeleteView(PermissionRequiredMixin, DeleteView):
         comments = Comment.objects.filter(toPost=self.get_object())
         context['replies'] = Reply.objects.filter(toComment__toPost=self.get_object())
         context['comments_count'] = comments.count()
+        context['comments'] = comments
+        return context
+
+#класс представления для удаления комментария
+class CommentDeleteView(PermissionRequiredMixin, DeleteView):
+    model = Comment
+    context_object_name = 'comment'
+    permission_required = ('bb.delete_comment',)
+    template_name = 'messages/delete.html'
+    queryset = Comment.objects.all()
+    success_url = '/messages'
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context =  super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        comments = Comment.objects.filter(pk=self.get_object().pk)
+        context['replies'] = Reply.objects.filter(toComment=self.get_object())
         context['comments'] = comments
         return context
