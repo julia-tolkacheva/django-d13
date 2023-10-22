@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     #scheduler:
     'django_apscheduler',
     #my custom apps:
-    'bb',
+    # 'bb',
+    'bb.apps.BbConfig',
     # 'accounts',
     # 'django_filters',
 ]
@@ -96,6 +97,7 @@ MIDDLEWARE = [
     # 
     # 'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'bulletin_board.urls'

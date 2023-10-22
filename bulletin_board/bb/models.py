@@ -68,6 +68,12 @@ class Comment(models.Model):
     def __str__(self):
         return self.preview(40)
     
+    
+class Reply(models.Model):
+    toComment = models.ForeignKey(Comment, on_delete = models.CASCADE)
+    cTime = models.DateTimeField(auto_now_add = True)
+    rbody = models.TextField(default = 'Ответ на комментарий')
+    
 
 class Media(models.Model):
     picture = 'P'

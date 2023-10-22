@@ -1,0 +1,38 @@
+{% extends 'layout/bb.html' %}
+{% load static %}
+
+{% block title %}
+Ответ на комментарий
+{% endblock title %} 
+
+{% block name %}
+Ответ на комментарий
+{% endblock name %} 
+
+{% block content %} 
+
+          <div class="blog-comments">
+           
+            {% if user.is_authenticated %}
+            <div class="reply-form">
+              <h4>{{user.username}}, напишите ответ к комментарию</h4>
+              <p>На почту, указанную при регистрации пользователя, придет оповещение * </p>
+              <form action="{{request.path}}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col form-group">
+                    {{ form }}
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+              </form>
+            </div>
+            {% else %}
+            <p>Написание комментариев доступно только 
+              <a href="/accounts/login/" class="scrollto">зарегистированным пользователям</a></p>
+            {% endif %}
+
+
+
+          </div><!-- End blog comments -->
+{% endblock content %}  

@@ -20,7 +20,7 @@
 {% endblock userbutton %}
 
 {% block content %} 
-    {% for message in messages %}
+    {% for message in page_obj %}
 
           <article class="entry entry-single">
             <div class="entry-img">
@@ -67,7 +67,12 @@
 
           </article><!-- End blog entry -->
 
+
+
     {% empty %}
+    <h2>Здесь нет ни одного сообщения. Сообщите об этом администратору!</h2>
     {% endfor %}
 
+    {% include 'layout/parts/paginator.html' %}
+    
 {% endblock content %}  

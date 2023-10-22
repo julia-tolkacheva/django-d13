@@ -2,25 +2,24 @@
 {% load static %}
 
 {% block title %}
-Дракон сказал: {{ message.title }}
+Удалить запись: {{ message.title }}
 {% endblock title %} 
 
 {% block name %}
-Дракон сказал: {{ message.title }}
+Дракон удалит эту запись: {{ message.title }}
 {% endblock name %} 
 
-{% block userbutton %}
-<ol>
-  {% if user == message.author %}
-  <li><a href="update/{{ message.pk }}" class="scrollto">Редактировать</a></li>
-  <li><a href="delete/{{ message.pk }}" class="scrollto">Удалить</a></li>
-  {% else %}
-  {% endif %}
-</ol>
-{% endblock userbutton %}
-
 {% block content %} 
-          <article class="entry entry-single">
+        <div class=row>
+            <form method="POST">
+                {% csrf_token %}
+                <p class="text-muted">
+                    <input class="btn btn-primary btn-warning" type="submit" value="ПОДТВЕРДИТЕ УДАЛЕНИЕ">
+                </p>
+            </form>
+        </div> 
+
+            <article class="entry entry-single">
             <div class="entry-img">
               <img src="../{{ message.mainPic.url }}" alt="" class="img-fluid">
             </div>
@@ -102,26 +101,6 @@
             {% endfor %}
             {% empty %}
             {% endfor %}
-
-            {% if user.is_authenticated %}
-            <div class="reply-form">
-              <h4>{{user.username}}, оставьте комментарий</h4>
-              <p>Автор может принять ваш комментарий, тогда на почту, указанную при регистрации придет оповещение * </p>
-              <form action="/messages/{{message.pk}}" method="post">
-                {% csrf_token %}
-                <div class="row">
-                  <div class="col form-group">
-                    {{ form }}
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Отправить</button>
-              </form>
-            </div>
-            {% else %}
-            <p>Написание комментариев доступно только 
-              <a href="/accounts/login/" class="scrollto">зарегистированным пользователям</a></p>
-            {% endif %}
-
 
 
           </div><!-- End blog comments -->

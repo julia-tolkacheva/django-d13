@@ -1,0 +1,40 @@
+{% extends 'layout/bb.html' %}
+{% load static %}
+
+{% block title %}
+Мои комментарии
+{% endblock title %} 
+
+{% block name %}
+Доска Дракона : мои комментарии
+{% endblock name %} 
+
+
+{% block content %} 
+
+<div class="blog-comments">
+    <h4 id="comments" class="comments-count">{{ user.username }}, у вас {{ comments.count }} комментариев:</h4>
+
+    {% for comment in comments %}
+        <div  class="comment">
+        <div class="comment-title">
+            <h5 class="text-muted"> К сообщению:  {{ comment.toPost.title }}</h5>
+        </div>
+
+        <div class="d-flex">
+            <div class="comment-img"><img src="{% static 'assets/images/unknown_user.jpg' %}" alt=""></div>
+            <div>
+            <h5><a href="">{{comment.fromUser.username}}</a> <a href="reply/{{ comment.pk }}" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+            <time datetime="{{ message.cTime|date:'Y-m-d' }}">
+                {{ comment.cTime|date:'d M Y H:i' }}</time>
+            <p>
+                {{comment.cbody}}
+            </p>
+            </div>
+        </div>
+        </div><!-- End comment # -->
+    {% empty %}
+    {% endfor %}
+</div>    
+
+{% endblock content %}  

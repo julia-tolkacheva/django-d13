@@ -1,9 +1,9 @@
 from typing import Any, Dict
-from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, FormView
 from django.views.generic.edit import FormView, ModelFormMixin
 from django.http import HttpResponseRedirect
-from .models import Post, Category, Comment, Media, PostCategory
-from .forms import MessageCreateForm, AddCommentForm
+from .models import Post, Category, Comment, Media, PostCategory, Reply
+from .forms import MessageCreateForm, AddCommentForm, ReplyForm
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -18,12 +18,12 @@ class MessageList(ListView):
     ordering = ['-cTime']
     template_name = 'messages/main.html'
     context_object_name = 'messages'
-    paginate_by = 10
+    paginate_by = 3
+    queryset = Post.objects.all().annotate(num_comments=Count('comment'))
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['categories'] = Category.objects.annotate(num_posts=Count('post'))
-        context['messages'] = Post.objects.annotate(num_comments=Count('comment'))
         return context
 
     def post(self, request, *args, **kwargs):
@@ -40,7 +40,7 @@ class MessageDetail(ModelFormMixin, DetailView):
     context_object_name = 'message'
     form_class = AddCommentForm
 
-    success_url = f'/messages/'
+    success_url = '/messages/'
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
@@ -48,6 +48,7 @@ class MessageDetail(ModelFormMixin, DetailView):
         context['post_cat'] = PostCategory.objects.filter(post=self.get_object())
         context['media'] = Media.objects.filter(toPost=self.get_object())
         comments = Comment.objects.filter(toPost=self.get_object())
+        context['replies'] = Reply.objects.filter(toComment__toPost=self.get_object())
         context['comments_count'] = comments.count()
         context['comments'] = comments
         return context
@@ -69,6 +70,48 @@ class MessageDetail(ModelFormMixin, DetailView):
         return render(request, self.template_name, {"form": form})
 
  
+# класс представления для отображения комментариев к постам юзера
+class CommentList(ListView):
+
+    context_object_name = 'comments'
+    template_name = 'messages/comments.html'
+
+    def get_queryset(self):
+        self.posts = Comment.objects.filter(toPost__author=self.request.user)
+        print(self.posts)
+        return self.posts
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context =  super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+        return super().get(request, *args, **kwargs)
+
+
+class CommentReply(FormView):
+
+    model = Reply
+    template_name = 'messages/reply.html'
+    context_object_name = 'reply'
+    form_class = ReplyForm
+    success_url = '/messages/'
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        #add author field
+        comment_pk = self.request.path.split('/')[-1]
+        target_comment = Comment.objects.get(pk=comment_pk)
+        self.object.toComment = target_comment
+        self.object.save()
+        #save categories (m2m)
+        # form.save_m2m()
+        return HttpResponseRedirect(self.get_success_url())
+    
 
 #класс представления для создания поста
 class MessageCreateView(PermissionRequiredMixin, CreateView):
@@ -76,7 +119,7 @@ class MessageCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'messages/create.html'
     form_class = MessageCreateForm
     context_object_name = 'message'
-    success_url = ''
+    success_url = '/messages'
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
@@ -87,8 +130,11 @@ class MessageCreateView(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        #add author field
         self.object.author = self.request.user
         self.object.save()
+        #save categories (m2m)
+        form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
     
 
@@ -96,18 +142,34 @@ class MessageCreateView(PermissionRequiredMixin, CreateView):
 
 
 #класс представления для изменения поста
-class PostUpdateView(PermissionRequiredMixin, UpdateView):
-    permission_required = ('news.change_post',)
-    template_name = 'newspaper/create_post.html'
+class MessageUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = ('bb.change_post',)
+    template_name = 'messages/create.html'
     form_class = MessageCreateForm
+    context_object_name = 'message'
+    success_url = '/messages/'
+
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 
 #класс представления для удаления поста
-class PostDeleteView(PermissionRequiredMixin, DeleteView):
-    permission_required = ('news.delete_post',)
-    template_name = 'newspaper/delete_post.html'
+class MessageDeleteView(PermissionRequiredMixin, DeleteView):
+    model = Post
+    context_object_name = 'message'
+    permission_required = ('bb.delete_post',)
+    template_name = 'messages/delete.html'
     queryset = Post.objects.all()
-    success_url = '/news/'#reverse_lazy('newspaper:news')
+    success_url = '/messages'
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context =  super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        context['post_cat'] = PostCategory.objects.filter(post=self.get_object())
+        context['media'] = Media.objects.filter(toPost=self.get_object())
+        comments = Comment.objects.filter(toPost=self.get_object())
+        context['replies'] = Reply.objects.filter(toComment__toPost=self.get_object())
+        context['comments_count'] = comments.count()
+        context['comments'] = comments
+        return context
