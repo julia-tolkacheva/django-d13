@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Уведомление о новом комментарии</title>
+    </head>
+    <body>
+        <h1>Приветствуем, <strong>{{ username }}</strong>. 
+            У вас есть <a href="http://{{ domain }}:8000/{{relative_url}}">новый комментарий</a>
+            к твоему сообщению:</h1>
+        <br>
+        <hr>
+        <h2> {{ title }}</h2>
+        <hr>
+        <br>
+        <h2> Комментарий:<br>
+            {{ body|truncatechars:50 }}</h2>
+        <br>
+        <hr>
+    </body>
+</html>

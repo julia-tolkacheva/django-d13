@@ -5,6 +5,6 @@ class BbConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'bb'
 
-    # def ready(self):
+    def ready(self):
         #включаем файл с обработчиком сигналов
-        # import bb.signals
+        import bb.signals

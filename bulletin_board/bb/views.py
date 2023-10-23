@@ -182,7 +182,7 @@ class CommentDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = ('bb.delete_comment',)
     template_name = 'messages/delete.html'
     queryset = Comment.objects.all()
-    success_url = '/messages'
+    success_url = '/messages/my_comments'
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)

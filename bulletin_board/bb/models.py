@@ -36,7 +36,7 @@ class Post(models.Model):
             return self.body[:count-3]+'...'
 
     def get_absolute_url(self):
-        return f'/post/{self.id}'
+        return f'messages/{self.id}'
 
 
 class PostCategory(models.Model):
@@ -67,6 +67,8 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.preview(40)
+    
+
     
     
 class Reply(models.Model):
