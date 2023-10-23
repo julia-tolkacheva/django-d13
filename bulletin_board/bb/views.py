@@ -20,7 +20,9 @@ class MessageList(ListView):
     template_name = 'messages/main.html'
     context_object_name = 'messages'
     paginate_by = 3
-    queryset = Post.objects.all().annotate(num_comments=Count('comment')).annotate(num_files=Count('media'))
+    queryset = Post.objects.all().annotate(num_comments=Count('comment', distinct=True), 
+                                           num_files=Count('media', distinct=True),
+                                           )
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
