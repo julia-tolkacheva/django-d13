@@ -20,6 +20,7 @@
 {% endblock userbutton %}
 
 {% block content %} 
+
     {% for message in page_obj %}
 
           <article class="entry entry-single">
@@ -40,6 +41,9 @@
                         {{ message.cTime|date:'Y-m-d H:i' }}</time></a></li>
                 <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> 
                     <a href="{{ message.pk }}#comments">{{ message.num_comments }} Comments</a></li>
+                <li class="d-flex align-items-center"><i class="bi bi-files"></i> 
+                    <a href="{{ message.pk }}#files">{{ message.num_files }} Files</a></li>
+
               </ul>
             </div>
 
@@ -74,5 +78,5 @@
     {% endfor %}
 
     {% include 'layout/parts/paginator.html' %}
-    
+
 {% endblock content %}  

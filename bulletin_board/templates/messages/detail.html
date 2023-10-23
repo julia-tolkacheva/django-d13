@@ -45,6 +45,26 @@
                 {{ message.body }}
               </p>
             </div>
+            <div class="engry-content" id="files"> 
+              {% for file in media %}
+              <h4>{{ file.title }}</h4>
+                {% if file.type == 'P' %}
+                  <p>{{ file.descr }}</p> 
+                  <img src="../{{ file.media.url }}" alt="" class="img-fluid">
+                {% elif file.type == 'V' %}
+                  <p>{{ file.descr }}</p> 
+                  <video muted="yes" controls="controls" src="../{{ file.media.url }}" type="video/mp4" width="760">
+                  </video>
+                {% elif file.type == 'F' %}
+                  <a href="../{{ file.media.url }}">{{ file.descr }}</a>
+                {% else %}  
+                {% endif %}
+              </p>
+
+              {% endfor %}
+            </div>
+          
+
 
             <div class="entry-footer">
               <i class="bi bi-folder"></i>

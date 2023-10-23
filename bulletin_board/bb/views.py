@@ -1,9 +1,9 @@
 from typing import Any, Dict
-from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView, FormView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.views.generic.edit import FormView, ModelFormMixin
 from django.http import HttpResponseRedirect
 from .models import Post, Category, Comment, Media, PostCategory, Reply
-from .forms import MessageCreateForm, AddCommentForm, ReplyForm
+from .forms import MessageCreateForm, AddCommentForm, ReplyForm, MediaCreateForm
 from .filters import CommentsFilter
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -20,12 +20,12 @@ class MessageList(ListView):
     template_name = 'messages/main.html'
     context_object_name = 'messages'
     paginate_by = 3
-    queryset = Post.objects.all().annotate(num_comments=Count('comment'))
+    queryset = Post.objects.all().annotate(num_comments=Count('comment')).annotate(num_files=Count('media'))
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['categories'] = Category.objects.annotate(num_posts=Count('post'))
-        context['recent_posts'] = Post.objects.all()[:5]
+        context['recent_posts'] = Post.objects.all().order_by('-cTime')[:5]
         return context
 
     def post(self, request, *args, **kwargs):
@@ -53,6 +53,7 @@ class MessageDetail(ModelFormMixin, DetailView):
         context['replies'] = Reply.objects.filter(toComment__toPost=self.get_object())
         context['comments_count'] = comments.count()
         context['comments'] = comments
+        context['recent_posts'] = Post.objects.all()[:5]
         return context
     
 
@@ -138,9 +139,30 @@ class MessageCreateView(PermissionRequiredMixin, CreateView):
         self.object.save()
         #save categories (m2m)
         form.save_m2m()
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(self.request.path + '/' + str(self.object.pk))
     
+#класс представления для создания медиа файлов
+class MediaCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = ('bb.add_media',)
+    template_name = 'messages/media.html'
+    form_class = MediaCreateForm
+    context_object_name = 'media'
 
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.annotate(num_posts=Count('post')) 
+        context['time_now'] = timezone.localtime(timezone.now())
+        return context  
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        #add author field
+        message_pk = self.request.path.split('/')[-1]
+        target_message = Post.objects.get(pk=message_pk)
+        self.object.toPost = target_message
+        self.object.save()
+        return HttpResponseRedirect(self.request.path)
+    
 
 
 
@@ -156,6 +178,7 @@ class MessageUpdateView(PermissionRequiredMixin, UpdateView):
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
+    
 
 #класс представления для удаления поста
 class MessageDeleteView(PermissionRequiredMixin, DeleteView):

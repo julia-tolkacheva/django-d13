@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Post, Comment, Reply
+from .models import Post, Comment, Reply, Media
 from django import forms
 from allauth.account.forms import SignupForm
 from django.forms.widgets import HiddenInput
@@ -63,6 +63,28 @@ class MessageCreateForm (ModelForm):
             'body': 'Напишите здесь ваш текст:',
             'title': 'Заголовок вашего сообщения',
             'mainPic': 'Выберете главную картинку(не менее 1024х768):'
+        }
+
+class MediaCreateForm (ModelForm):
+    class Meta:
+        model = Media
+        exclude = ('toPost',)
+        widgets = {
+          'type' : forms.Select(attrs={
+            'class': 'form-control', 
+          }),
+          'title' : forms.TextInput(attrs={
+            'class': 'form-control', 
+          }),
+          'descr' : forms.TextInput(attrs={
+            'class': 'form-control', 
+          }),
+        }
+        labels = {
+            'type': 'Выберите тип файла:',
+            'title': 'Напишите здесь заголовок:',
+            'descr': 'Напишите здесь описание файла:',
+            'media': 'Выберете файл:'
         }
 
 

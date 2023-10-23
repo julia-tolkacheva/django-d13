@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import MessageList, MessageDetail, MessageCreateView, \
-MessageUpdateView, MessageDeleteView, CommentList, CommentReply, CommentDeleteView
+MessageUpdateView, MessageDeleteView, CommentList, CommentReply, CommentDeleteView, MediaCreateView
 
 urlpatterns = [
     path('', MessageList.as_view(), name='messages'),
@@ -8,6 +8,7 @@ urlpatterns = [
     # path('search', NewsSearch.as_view(), name='post_search'),
     path('my_comments', CommentList.as_view(), name='comments'),
     path('create', MessageCreateView.as_view(), name='msg_create'),
+    path('create/<int:pk>', MediaCreateView.as_view(), name='media_create'),
     path('update/<int:pk>', MessageUpdateView.as_view(), name='msg_update'),
     path('delete/<int:pk>', MessageDeleteView.as_view(), name='msg_delete'),
     path('comdelete/<int:pk>', CommentDeleteView.as_view(), name='com_delete'),
