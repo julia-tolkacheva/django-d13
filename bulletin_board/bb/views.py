@@ -4,6 +4,7 @@ from django.views.generic.edit import FormView, ModelFormMixin
 from django.http import HttpResponseRedirect
 from .models import Post, Category, Comment, Media, PostCategory, Reply
 from .forms import MessageCreateForm, AddCommentForm, ReplyForm
+from .filters import CommentsFilter
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -24,6 +25,7 @@ class MessageList(ListView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['categories'] = Category.objects.annotate(num_posts=Count('post'))
+        context['recent_posts'] = Post.objects.all()[:5]
         return context
 
     def post(self, request, *args, **kwargs):
@@ -78,13 +80,13 @@ class CommentList(ListView):
 
     def get_queryset(self):
         self.posts = Comment.objects.filter(toPost__author=self.request.user)
-        print(self.posts)
         return self.posts
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['categories'] = Category.objects.annotate(num_posts=Count('post'))
         context['replies'] = Reply.objects.filter(toComment__toPost__author=self.request.user)
+        context['filter'] = CommentsFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
     def post(self, request, *args, **kwargs):

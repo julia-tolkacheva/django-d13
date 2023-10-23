@@ -19,7 +19,7 @@ class Post(models.Model):
     postRate = models.IntegerField(default = 0)
 
     def __str__(self):
-        return f'{self.title}-({self.pk})' 
+        return f'{self.title}-({Comment.objects.filter(toPost=self).count()})' 
 
     def like(self):
         self.postRate += 1

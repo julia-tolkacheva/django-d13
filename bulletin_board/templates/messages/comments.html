@@ -15,7 +15,14 @@
 <div class="blog-comments">
     <h4 id="comments" class="comments-count">{{ user.username }}, у вас {{ comments.count }} комментариев:</h4>
 
-    {% for comment in comments %}
+    <div class="row small">
+      <form method="GET">
+              {{ filter.form }}
+              <input class="btn btn-primary" type="submit" value="Искать">
+      </form>
+    </div> 
+
+    {% for comment in filter.qs %}
         <div  class="comment">
         <div class="comment-title">
             <h5 class="text-muted"> К сообщению:  {{ comment.toPost.title }}</h5>

@@ -80,5 +80,5 @@ class ReplyForm(ModelForm):
           
           }),
         }
-        labels={'cbody': 'Ваш ответ:'}
+        labels={'rbody': 'Ваш ответ:'}
 

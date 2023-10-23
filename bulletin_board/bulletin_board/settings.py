@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     # 'bb',
     'bb.apps.BbConfig',
     # 'accounts',
-    # 'django_filters',
+    'django_filters',
 ]
 #sending emails:
 EMAIL_HOST = 'smtp.yandex.ru'

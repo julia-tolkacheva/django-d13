@@ -135,37 +135,15 @@
                 </ul>
               </div><!-- End sidebar categories-->
 
-              <h3 class="sidebar-title">Recent Posts</h3>
+              <h3 class="sidebar-title">Последние посты:</h3>
               <div class="sidebar-item recent-posts">
+                {% for post in recent_posts %}
                 <div class="post-item clearfix">
                   <img src="assets/img/blog/blog-recent-1.jpg" alt="">
-                  <h4><a href="blog-single.html">Nihil blanditiis at in nihil autem</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
+                  <h4><a href="blog-single.html">{{ post.title}}</a></h4>
+                  <time datetime="2020-01-01">{{ post.cTime|date:'d M Y H:i'}}</time>
                 </div>
-
-                <div class="post-item clearfix">
-                  <img src="assets/img/blog/blog-recent-2.jpg" alt="">
-                  <h4><a href="blog-single.html">Quidem autem et impedit</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-
-                <div class="post-item clearfix">
-                  <img src="assets/img/blog/blog-recent-3.jpg" alt="">
-                  <h4><a href="blog-single.html">Id quia et et ut maxime similique occaecati ut</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-
-                <div class="post-item clearfix">
-                  <img src="assets/img/blog/blog-recent-4.jpg" alt="">
-                  <h4><a href="blog-single.html">Laborum corporis quo dara net para</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-
-                <div class="post-item clearfix">
-                  <img src="assets/img/blog/blog-recent-5.jpg" alt="">
-                  <h4><a href="blog-single.html">Et dolores corrupti quae illo quod dolor</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
+                {% endfor %}
 
               </div><!-- End sidebar recent posts-->
 
@@ -212,7 +190,7 @@
               <input type="email" name="email"><input type="submit" value="Подписаться">
             </form>
           </div>
-        </div>
+        </div>Jan 1, 2020
       </div>
     </div>
 
