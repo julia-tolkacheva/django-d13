@@ -13,6 +13,7 @@ from django.db.models import Avg, Count, Min, Sum
 # LoginRequiedMixin - для авторизованного доступа к странице
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
+
 # main page view
 class MessageList(ListView):
     model = Post
